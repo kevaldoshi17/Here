@@ -5,13 +5,44 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/profile_picture_circle"
+        android:contentDescription="Profile picture of message sender"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
+        android:text="HereBot"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@id/profile_picture"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/recevied_message_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/received_bubble"
         android:maxWidth="250dp"
         android:padding="10dp"
         android:text="Hey! How are you doing?"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toRightOf="@id/profile_picture"
+        app:layout_constraintTop_toBottomOf="@id/profile_picture" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:text="11:40"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@id/recevied_message_body"
+        app:layout_constraintLeft_toRightOf="@id/recevied_message_body" />
 </androidx.constraintlayout.widget.ConstraintLayout>
