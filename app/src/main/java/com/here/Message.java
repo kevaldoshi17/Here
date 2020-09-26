@@ -4,11 +4,13 @@ class Message {
     private String message;
     private User sender;
     private long createdAt;
+    private int type;
 
-    public Message(String message, User sender, long createdAt) {
+    public Message(String message, User sender, long createdAt, int type) {
         this.message = message;
         this.sender = sender;
         this.createdAt = createdAt;
+        this.type = type;
     }
 
     public String getMessage() {
@@ -33,5 +35,13 @@ class Message {
 
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
