@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Message> messageList;
 
+    User self = new User("you");
+    User bot = new User("HereBot");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,21 +51,20 @@ public class MainActivity extends AppCompatActivity {
                         sendMessage(userMessage);
                     }
                 }
+                messageInputEditText.setText("");
             }
         });
 
-        User self = new User("you");
-        User bot = new User("HereBot");
-
         messageList = new ArrayList<>();
-        messageList.add(new Message("I wanna eat some fast food", self, Calendar.getInstance().getTimeInMillis(), 1));
-        messageList.add(new Message("Great! Here are some restaurants in your local area", bot, Calendar.getInstance().getTimeInMillis(), 2));
-        messageList.add(new Message("Which of these has spicy food?", self, Calendar.getInstance().getTimeInMillis(), 1));
-        messageList.add(new Message("Cheng's has a reputation for spicy food.", bot, Calendar.getInstance().getTimeInMillis(), 2));
-        messageList.add(new Message("Sounds great", self, Calendar.getInstance().getTimeInMillis(), 1));
-        messageList.add(new Message("Do you want me to show the directions?", bot, Calendar.getInstance().getTimeInMillis(), 2));
-        messageList.add(new Message("yes please", self, Calendar.getInstance().getTimeInMillis(), 1));
-        messageList.add(new Message("Here you go!", bot, Calendar.getInstance().getTimeInMillis(), 2));
+
+//        messageList.add(new Message("I wanna eat some fast food", self, Calendar.getInstance().getTimeInMillis(), 1));
+//        messageList.add(new Message("Great! Here are some restaurants in your local area", bot, Calendar.getInstance().getTimeInMillis(), 2));
+//        messageList.add(new Message("Which of these has spicy food?", self, Calendar.getInstance().getTimeInMillis(), 1));
+//        messageList.add(new Message("Cheng's has a reputation for spicy food.", bot, Calendar.getInstance().getTimeInMillis(), 2));
+//        messageList.add(new Message("Sounds great", self, Calendar.getInstance().getTimeInMillis(), 1));
+//        messageList.add(new Message("Do you want me to show the directions?", bot, Calendar.getInstance().getTimeInMillis(), 2));
+//        messageList.add(new Message("yes please", self, Calendar.getInstance().getTimeInMillis(), 1));
+//        messageList.add(new Message("Here you go!", bot, Calendar.getInstance().getTimeInMillis(), 2));
 
 
         messageListAdapter = new MessageListAdapter(this, messageList);
@@ -71,6 +73,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String message) {
+
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+        System.out.println(message);
+
+        messageList.add(new Message(message, self, Calendar.getInstance().getTimeInMillis(),1));
+
+        messageListAdapter.setMessageList(messageList);
+        messageListAdapter.notifyDataSetChanged();
+
+        getResponse(message);
+
     }
+
+    private void getResponse(String input) {
+        // TODO: API Call here.
+
+        messageList.add(new Message("Okay", bot, Calendar.getInstance().getTimeInMillis(),2));
+
+        messageListAdapter.setMessageList(messageList);
+        messageListAdapter.notifyDataSetChanged();
+
+    }
+
 }

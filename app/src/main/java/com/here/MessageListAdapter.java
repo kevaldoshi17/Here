@@ -25,6 +25,10 @@ class MessageListAdapter extends RecyclerView.Adapter {
         this.messageList = messageList;
     }
 
+    public void setMessageList(List<Message> messageList) {
+        this.messageList = messageList;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
