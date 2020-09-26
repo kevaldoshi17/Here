@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/recevied_message_body"
+        android:id="@+id/received_message_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/received_bubble"
@@ -38,13 +38,13 @@
         app:layout_constraintTop_toBottomOf="@id/received_message_sender_profile_picture" />
 
     <TextView
-        android:id="@+id/recevied_message_timestamp"
+        android:id="@+id/received_message_timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:text="11:40"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@id/recevied_message_body"
-        app:layout_constraintLeft_toRightOf="@id/recevied_message_body" />
+        app:layout_constraintBottom_toBottomOf="@id/received_message_body"
+        app:layout_constraintLeft_toRightOf="@id/received_message_body" />
 </androidx.constraintlayout.widget.ConstraintLayout>
