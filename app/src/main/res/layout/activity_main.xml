@@ -14,24 +14,25 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:clipToPadding="false"
+        android:orientation="horizontal"
         android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/messageInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:layout_toStartOf="@id/sendMessageFab"
-            android:layout_toLeftOf="@id/sendMessageFab"
+            android:layout_weight="1"
             android:hint="What do you want to do?">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -44,14 +45,12 @@
             android:id="@+id/sendMessageFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
             android:src="@drawable/ic_baseline_send_24"
             app:backgroundTint="@color/colorAccent"
             app:fabSize="normal"
             app:tint="@android:color/white" />
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
