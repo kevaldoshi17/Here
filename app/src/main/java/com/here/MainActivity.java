@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         messageList.add(new Message(message, self, Calendar.getInstance().getTimeInMillis(), 1));
         messageListAdapter.setMessageList(messageList);
         messageListAdapter.notifyDataSetChanged();
+        messageRecycler.smoothScrollToPosition(messageList.size() - 1);
 
         getResponse(message);
     }
@@ -74,5 +75,6 @@ public class MainActivity extends AppCompatActivity {
         messageList.add(new Message("Okay", bot, Calendar.getInstance().getTimeInMillis(), 2));
         messageListAdapter.setMessageList(messageList);
         messageListAdapter.notifyDataSetChanged();
+        messageRecycler.smoothScrollToPosition(messageList.size() - 1);
     }
 }
