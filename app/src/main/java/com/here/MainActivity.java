@@ -18,7 +18,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -148,22 +147,16 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // 1 sec lag
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                queue.add(stringRequest);
-            }
-        }, 1000);
-
+        queue.add(stringRequest);
     }
 
     private void getResponse() {
-        RequestQueue queue = Volley.newRequestQueue(this);
+        final RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://d63fe6c43c57.ngrok.io/response";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        addMessage("Okay, searching...", bot, 2);
+
+        final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -203,7 +196,14 @@ public class MainActivity extends AppCompatActivity {
 
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(10000, 2, 1.0f));
 
-        queue.add(stringRequest);
+        // 1 sec lag
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                queue.add(stringRequest);
+            }
+        }, 2000);
     }
 
     private List<LocalBusiness> getBusinessList(JSONArray places) throws JSONException {
