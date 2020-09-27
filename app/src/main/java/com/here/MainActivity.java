@@ -3,6 +3,7 @@ package com.here;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public static double latestLatitude = -1.0;
     public static double latestLongitude = -1.0;
     private static int messageIndex = 100;
-    LocationManager locationManager;
+    private LocationManager locationManager;
     private TextInputLayout messageInputLayout;
     private TextInputEditText messageInputEditText;
     private FloatingActionButton sendMessageFab;
@@ -86,18 +88,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void findLatestLatitudeLongitude() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener mlocListener = new MyLocationListener(this);
+        LocationListener mlocListener = new MyLocationListener(this, locationManager);
 
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO Prompt permission
-//            Toast.makeText(this, "Give Location Permission", Toast.LENGTH_SHORT).show();
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                latestLongitude = location.getLongitude();
+                latestLatitude = location.getLatitude();
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, mlocListener);
+            }
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 2);
         }
+    }
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, mlocListener);
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            findLatestLatitudeLongitude();
+        } else {
+            Toast.makeText(this, "Location permission required. Sorry", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setListenerOnFab() {
@@ -145,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("body", message);
-                params.put("latitude",latestLatitude+"");
-                params.put("longitude",latestLongitude+"");
+                params.put("latitude", latestLatitude + "");
+                params.put("longitude", latestLongitude + "");
                 Log.i("sending", params.toString());
                 return params;
             }
@@ -178,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                             String heresAList = "Here's a list of places where you can eat " + searchTerm;
                             addMessage(heresAList, bot, 2);
 
-                            for (int i=0; i<Math.min(5,businessList.size());i++) {
+                            for (int i = 0; i < Math.min(5, businessList.size()); i++) {
                                 LocalBusiness business = businessList.get(i);
                                 StringBuilder businessDetailsMessageBody = new StringBuilder();
                                 businessDetailsMessageBody.append(business.getName()).append("\n");
