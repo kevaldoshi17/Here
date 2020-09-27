@@ -93,7 +93,7 @@ class MessageListAdapter extends RecyclerView.Adapter {
             timeText = itemView.findViewById(R.id.received_message_timestamp);
             nameText = itemView.findViewById(R.id.recevied_message_sender_name);
             profilePicture = itemView.findViewById(R.id.received_message_sender_profile_picture);
-            businessRecyclerView = itemView.findViewById(R.id.rv_business);
+//            businessRecyclerView = itemView.findViewById(R.id.rv_business);
 
             responseAdapter = new ResponseAdapter(mContext, businessList);
 
@@ -101,8 +101,8 @@ class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(Message message) {
 
-            businessRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-            businessRecyclerView.setAdapter(responseAdapter);
+//            businessRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+//            businessRecyclerView.setAdapter(responseAdapter);
 
             messageBody.setText(message.getMessage());
             timeText.setText(DateUtils.formatDateTime(mContext, message.getCreatedAt(), DateUtils.FORMAT_SHOW_TIME));

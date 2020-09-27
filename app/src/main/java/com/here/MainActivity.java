@@ -10,12 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,6 +24,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.here.models.LocalBusiness;
 import com.here.models.MyLocationListener;
 import com.here.models.User;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -108,17 +112,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(final String message) {
         messageList.add(new Message(message, self, Calendar.getInstance().getTimeInMillis(), 1));
         messageListAdapter.setList(messageList, localBusinessList);
         messageListAdapter.notifyDataSetChanged();
         messageRecycler.smoothScrollToPosition(messageList.size() - 1);
-
-        getResponse(message);
-    }
-
-    private void getResponse(final String input) {
-        // TODO: API Call here.
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://d63fe6c43c57.ngrok.io/user_sentences";
@@ -127,8 +125,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d("onResponse", response);
-                Toast.makeText(MainActivity.this, "Sucess!", Toast.LENGTH_SHORT).show();
-                messageList.add(new Message(response, bot, Calendar.getInstance().getTimeInMillis(), 2));
+                getResponse();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -145,17 +142,50 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("body", input);
+                params.put("body", message);
                 Log.i("sending", params.toString());
                 return params;
             }
         };
 
         queue.add(stringRequest);
+    }
 
-        messageList.add(new Message("Okay", bot, Calendar.getInstance().getTimeInMillis(), 2));
-        messageListAdapter.setList(messageList, localBusinessList);
-        messageListAdapter.notifyDataSetChanged();
-        messageRecycler.smoothScrollToPosition(messageList.size() - 1);
+    private void getResponse() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://d63fe6c43c57.ngrok.io/response";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        String businessName = "";
+                        String businessAddress = "";
+                        String businessRating = "";
+                        try {
+                            JSONObject responseJson = new JSONArray(response).getJSONObject(0);
+                            businessName = responseJson.getString("name");
+                            businessAddress = responseJson.getString("add");
+                            businessRating = responseJson.getInt("rating") + "";
+                        } catch (JSONException e) {
+                            Log.e("Here", "JSON error");
+                        }
+
+                        messageList.add(new Message("You can go to " + businessName + ". It's rated " + businessRating + " out of 5 stars.", bot, Calendar.getInstance().getTimeInMillis(), 2));
+                        messageList.add(new Message("It's at " + businessAddress, bot, Calendar.getInstance().getTimeInMillis(), 2));
+
+                        messageListAdapter.setList(messageList, localBusinessList);
+                        messageListAdapter.notifyDataSetChanged();
+                        messageRecycler.smoothScrollToPosition(messageList.size() - 1);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("error", error.toString());
+                Toast.makeText(MainActivity.this, "An error occurred while getting a response :(", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        queue.add(stringRequest);
     }
 }

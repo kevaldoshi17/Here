@@ -35,7 +35,7 @@ public class MyLocationListener implements LocationListener {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
-                Toast.makeText(ctx, "Give Location Permission", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ctx, "Give Location Permission", Toast.LENGTH_SHORT).show();
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
