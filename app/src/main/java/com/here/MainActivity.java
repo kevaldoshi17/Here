@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private List<LocalBusiness> localBusinessList;
     private User self = new User("you");
     private User bot = new User("HereBot");
+    List<String> urls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         messageList = new ArrayList<>();
         localBusinessList = new ArrayList<>();
+        urls = new ArrayList<>();
 
         messageListAdapter = new MessageListAdapter(this, messageList, localBusinessList);
         messageRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 messageInputEditText.setText("");
+                urls.add("");
             }
         });
     }
@@ -157,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
         String url = "https://d63fe6c43c57.ngrok.io/response";
 
         addMessage("Okay, searching...", bot, 2);
+        urls.add("");
+        urls.add("");
 
         final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -180,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                                 businessDetailsMessageBody.append(business.getContactNumber()).append("\n");
                                 businessDetailsMessageBody.append(business.getAddress()).append("\n");
                                 businessDetailsMessageBody.append(business.getUrl());
+                                urls.add(business.getUrl());
 
                                 addMessage(businessDetailsMessageBody.toString(), bot, 2);
                             }
@@ -228,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addMessage(String message, User sender, int type) {
         messageList.add(new Message(message, sender, Calendar.getInstance().getTimeInMillis(), type));
-        messageListAdapter.setList(messageList, localBusinessList);
+        messageListAdapter.setList(messageList, localBusinessList, urls);
         messageListAdapter.notifyDataSetChanged();
         messageRecycler.smoothScrollToPosition(messageList.size() - 1);
     }
