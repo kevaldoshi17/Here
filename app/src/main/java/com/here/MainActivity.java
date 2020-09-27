@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("body", message);
+                params.put("latitude",latestLatitude+"");
+                params.put("longitude",latestLongitude+"");
                 Log.i("sending", params.toString());
                 return params;
             }
@@ -171,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
                             String heresAList = "Here's a list of places where you can eat " + searchTerm;
                             addMessage(heresAList, bot, 2);
 
-                            for (LocalBusiness business : businessList) {
+                            for (int i=0; i<Math.min(5,businessList.size());i++) {
+                                LocalBusiness business = businessList.get(i);
                                 StringBuilder businessDetailsMessageBody = new StringBuilder();
                                 businessDetailsMessageBody.append(business.getName()).append("\n");
                                 businessDetailsMessageBody.append(business.getContactNumber()).append("\n");
