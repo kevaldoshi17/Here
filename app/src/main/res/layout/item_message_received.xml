@@ -47,4 +47,17 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@id/received_message_body"
         app:layout_constraintLeft_toRightOf="@id/received_message_body" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv_business"
+        app:layout_constraintTop_toBottomOf="@id/received_message_timestamp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="20dp"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.here.models.LocalBusiness;
 
 class MessageListAdapter extends RecyclerView.Adapter {
 
@@ -20,14 +23,17 @@ class MessageListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<Message> messageList;
+    private List<LocalBusiness> businessList;
 
-    public MessageListAdapter(Context mContext, List<Message> messageList) {
+    public MessageListAdapter(Context mContext, List<Message> messageList, List<LocalBusiness> businessList) {
         this.mContext = mContext;
         this.messageList = messageList;
+        this.businessList = businessList;
     }
 
-    public void setMessageList(List<Message> messageList) {
+    public void setList(List<Message> messageList, List<LocalBusiness> localBusinessList) {
         this.messageList = messageList;
+        this.businessList = localBusinessList;
     }
 
     @NonNull
@@ -75,8 +81,11 @@ class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+
         TextView messageBody, timeText, nameText;
         ImageView profilePicture;
+        RecyclerView businessRecyclerView;
+        ResponseAdapter responseAdapter;
 
         ReceivedMessageHolder(View itemView) {
             super(itemView);
@@ -84,9 +93,17 @@ class MessageListAdapter extends RecyclerView.Adapter {
             timeText = itemView.findViewById(R.id.received_message_timestamp);
             nameText = itemView.findViewById(R.id.recevied_message_sender_name);
             profilePicture = itemView.findViewById(R.id.received_message_sender_profile_picture);
+            businessRecyclerView = itemView.findViewById(R.id.rv_business);
+
+            responseAdapter = new ResponseAdapter(mContext, businessList);
+
         }
 
         void bind(Message message) {
+
+            businessRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+            businessRecyclerView.setAdapter(responseAdapter);
+
             messageBody.setText(message.getMessage());
             timeText.setText(DateUtils.formatDateTime(mContext, message.getCreatedAt(), DateUtils.FORMAT_SHOW_TIME));
             nameText.setText(message.getSender().getName());

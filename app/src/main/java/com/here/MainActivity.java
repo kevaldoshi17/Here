@@ -6,6 +6,7 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.here.models.LocalBusiness;
 import com.here.models.User;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private MessageListAdapter messageListAdapter;
 
     private List<Message> messageList;
+    private List<LocalBusiness> localBusinessList;
 
     private User self = new User("you");
     private User bot = new User("HereBot");
@@ -56,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         messageList = new ArrayList<>();
-        messageListAdapter = new MessageListAdapter(this, messageList);
+        localBusinessList = new ArrayList<>();
+
+        messageListAdapter = new MessageListAdapter(this, messageList, localBusinessList);
         messageRecycler.setLayoutManager(new LinearLayoutManager(this));
         messageRecycler.setAdapter(messageListAdapter);
 
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendMessage(String message) {
         messageList.add(new Message(message, self, Calendar.getInstance().getTimeInMillis(), 1));
-        messageListAdapter.setMessageList(messageList);
+        messageListAdapter.setList(messageList,localBusinessList);
         messageListAdapter.notifyDataSetChanged();
         messageRecycler.smoothScrollToPosition(messageList.size() - 1);
 
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: API Call here.
 
         messageList.add(new Message("Okay", bot, Calendar.getInstance().getTimeInMillis(), 2));
-        messageListAdapter.setMessageList(messageList);
+        messageListAdapter.setList(messageList,localBusinessList);
         messageListAdapter.notifyDataSetChanged();
         messageRecycler.smoothScrollToPosition(messageList.size() - 1);
     }
