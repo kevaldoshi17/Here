@@ -179,7 +179,8 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                         } catch (JSONException e) {
-                            Log.e("Here", "JSON error");
+                            Log.e("Here", "JSON error: " + e.getMessage());
+                            Toast.makeText(MainActivity.this, "An error occurred while parsing JSON.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener() {
