@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -116,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
     private void sendMessage(final String message) {
         addMessage(message, self, 1);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
+        final RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://d63fe6c43c57.ngrok.io/user_sentences";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        final StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("onResponse", response);
@@ -146,7 +148,15 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        queue.add(stringRequest);
+        // 1 sec lag
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                queue.add(stringRequest);
+            }
+        }, 1000);
+
     }
 
     private void getResponse() {
