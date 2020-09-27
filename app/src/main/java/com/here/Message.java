@@ -1,10 +1,13 @@
 package com.here;
 
+import com.here.models.User;
+
 class Message {
     private String message;
     private User sender;
     private long createdAt;
     private int type;
+    private boolean isResponse;
 
     public Message(String message, User sender, long createdAt, int type) {
         this.message = message;

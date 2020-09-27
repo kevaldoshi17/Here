@@ -6,6 +6,7 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.here.models.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         messageListAdapter = new MessageListAdapter(this, messageList);
         messageRecycler.setLayoutManager(new LinearLayoutManager(this));
         messageRecycler.setAdapter(messageListAdapter);
+
     }
 
     private void sendMessage(String message) {
