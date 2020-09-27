@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -113,10 +114,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendMessage(final String message) {
-        messageList.add(new Message(message, self, Calendar.getInstance().getTimeInMillis(), 1));
-        messageListAdapter.setList(messageList, localBusinessList);
-        messageListAdapter.notifyDataSetChanged();
-        messageRecycler.smoothScrollToPosition(messageList.size() - 1);
+        addMessage(message, self, 1);
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://d63fe6c43c57.ngrok.io/user_sentences";
@@ -159,24 +157,30 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String businessName = "";
-                        String businessAddress = "";
-                        String businessRating = "";
+                        String searchTerm = "";
+
                         try {
                             JSONObject responseJson = new JSONArray(response).getJSONObject(0);
-                            businessName = responseJson.getString("name");
-                            businessAddress = responseJson.getString("add");
-                            businessRating = responseJson.getInt("rating") + "";
+                            searchTerm = responseJson.getJSONObject("queryContext").getString("originalQuery");
+                            JSONArray placesArray = responseJson.getJSONObject("places").getJSONArray("value");
+                            List<LocalBusiness> businessList = getBusinessList(placesArray);
+
+                            String heresAList = "Here's a list of places where you can eat " + searchTerm;
+                            addMessage(heresAList, bot, 2);
+
+                            for (LocalBusiness business : businessList) {
+                                StringBuilder businessDetailsMessageBody = new StringBuilder();
+                                businessDetailsMessageBody.append(business.getName()).append("\n");
+                                businessDetailsMessageBody.append(business.getContactNumber()).append("\n");
+                                businessDetailsMessageBody.append(business.getAddress()).append("\n");
+                                businessDetailsMessageBody.append(business.getUrl());
+
+                                addMessage(businessDetailsMessageBody.toString(), bot, 2);
+                            }
+
                         } catch (JSONException e) {
                             Log.e("Here", "JSON error");
                         }
-
-                        messageList.add(new Message("You can go to " + businessName + ". It's rated " + businessRating + " out of 5 stars.", bot, Calendar.getInstance().getTimeInMillis(), 2));
-                        messageList.add(new Message("It's at " + businessAddress, bot, Calendar.getInstance().getTimeInMillis(), 2));
-
-                        messageListAdapter.setList(messageList, localBusinessList);
-                        messageListAdapter.notifyDataSetChanged();
-                        messageRecycler.smoothScrollToPosition(messageList.size() - 1);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -186,6 +190,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(10000, 2, 1.0f));
+
         queue.add(stringRequest);
+    }
+
+    private List<LocalBusiness> getBusinessList(JSONArray places) throws JSONException {
+        List<LocalBusiness> businessList = new ArrayList<>();
+
+        for (int i = 0; i < places.length(); i++) {
+            JSONObject place = places.getJSONObject(i);
+            String type = place.getString("_type");
+            String name = place.getString("name");
+            String url = place.getString("url");
+            String address = place.getJSONObject("address").getString("text");
+            String contactNumber = place.getString("telephone");
+
+            businessList.add(new LocalBusiness(type, address, name, contactNumber, url));
+        }
+
+        return businessList;
+    }
+
+    private void addMessage(String message, User sender, int type) {
+        messageList.add(new Message(message, sender, Calendar.getInstance().getTimeInMillis(), type));
+        messageListAdapter.setList(messageList, localBusinessList);
+        messageListAdapter.notifyDataSetChanged();
+        messageRecycler.smoothScrollToPosition(messageList.size() - 1);
     }
 }
